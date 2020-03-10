@@ -37,4 +37,10 @@ polygonSeries.data = [{
   "Total_Confirmed_cases": 100,
   "Recovered_cases": 100,
   "Deaths": 100
+},{
+"id": "NY",
+"name": "United States",
+"Total_Confirmed_cases": 100,
+"Recovered_cases": 100,
+"Deaths": 100
 }]

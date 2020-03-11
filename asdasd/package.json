@@ -1,0 +1,30 @@
+{
+  "name": "covid19tracker",
+  "version": "1.0.0",
+  "description": "A dashboard for tracking Covid-19",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "David Bershadsky",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "jquery": "^3.4.1",
+    "method-override": "^3.0.0",
+    "save": "^2.4.0",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/david115599/Covid19Tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/david115599/Covid19Tracker/issues"
+  },
+  "homepage": "https://github.com/david115599/Covid19Tracker#readme"
+}

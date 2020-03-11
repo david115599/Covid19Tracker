@@ -10,12 +10,15 @@
   "author": "David Bershadsky",
   "license": "ISC",
   "dependencies": {
+    "country-list": "^2.2.0",
     "ejs": "^2.6.1",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "jquery": "^3.4.1",
     "method-override": "^3.0.0",
     "request": "^2.88.2",
+    "requestjs": "^1.0.3",
+    "requirejs": "^2.3.6",
     "save": "^2.4.0",
     "serve-favicon": "^2.5.0"
   },

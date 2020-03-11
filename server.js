@@ -25,7 +25,6 @@ app.get('/', function(request, response){
   response.render('index',{feedback:""});
 });
 
-
 app.post('/view', function(request, responsea, body){
   var options = {
     url: 'http://apps.who.int/gho/athena/api/GHO/WHOSIS_000001',

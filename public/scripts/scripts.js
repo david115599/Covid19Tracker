@@ -305,33 +305,20 @@ function processData(allText) {
   console.log(confirmeddata[0]);
   if (true) {
     for (var i = 0; i < confirmeddata.length; i++) {
-      //this line bellow is wrong bc its an object array not a plain array
-      countryList[countryList.indexof(confirmeddata[i]["Country_Region"]][Total_Confirmed_cases] += confirmeddata[i][Object.keys(confirmeddata[i])[confirmeddata[i].length()-1]];
+      for (var q = 0; q < countryList.length; q++) {
+        if (countryList[q].name == confirmeddata[i].Country_Region) {
+          infectedcountries.push({"id": countryList[q].code, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]]});
+        }
+      }
     }
-    polygonSeries.data = [{
-      "id": "US",
-      "name": "United States",
-      "Total_Confirmed_cases": 100,
-      "Recovered_cases": 100,
-      "Deaths": 100
-    }, {
-      "id": "FR",
-      "name": "France",
-      "Total_Confirmed_cases": 100,
-      "Recovered_cases": 100,
-      "Deaths": 100
-    },{
-      "id": "NY",
-      "name": "United States",
-      "Total_Confirmed_cases": 100,
-      "Recovered_cases": 100,
-      "Deaths": 100
-    },
-    {
-      "id": "CN",
-      "name": "China",
-      "Total_Confirmed_cases": 10000,
-      "Recovered_cases": 100,
-      "Deaths": 100
-    }]
   }
+  for (var i = 0; i < infectedcountries.length; i++) {
+    for (var q = 0; q < infectedcountries.length; q++) {
+      if (q!=i && infectedcountries[i].id == infectedcountries[q].id) {
+        infectedcountries[i].Total_Confirmed_cases+=infectedcountries.splice(q);
+      }
+    }
+  }
+  console.log(infectedcountries);
+  polygonSeries.data = infectedcountries
+}

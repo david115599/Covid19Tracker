@@ -1,3 +1,4 @@
+var d = new Date();
 var countryList = [
   {"name": "Afghanistan", "code": "AF"},
   {"name": "land Islands", "code": "AX"},
@@ -262,7 +263,7 @@ polygonSeries.useGeodata = true;
 
 // Configure series
 var polygonTemplate = polygonSeries.mapPolygons.template;
-polygonTemplate.tooltipText = "{name} Confirmed Cases: {Total_Confirmed_cases} Recovered:{Recovered_cases} Deaths:{Deaths}";
+polygonTemplate.tooltipText = "{name}: Confirmed Cases: {Total_Confirmed_cases} Recovered:{Recovered_cases} Deaths:{Deaths}";
 polygonTemplate.fill = am4core.color("#74B266");
 
 // Create hover state and set alternative fill color
@@ -281,8 +282,23 @@ console.log(data.toString());
 });*/
 var confirmeddata = [];
 var infectedcountries = [];
+var urlf;
+/*
+if (d.getMonth()<10) {
+if (d.getDay()<10) {
+
+urlf = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/0'+d.getMonth()+'-0'+d.getDay()+'-'+d.getFullYear()+'.csv';
+}
+else {
+urlf = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/0'+d.getMonth()+'-'+vgetDay()+'-'+d.getFullYear()+'.csv';
+}
+}
+else if (d.getDay()<10) {
+  urlf = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/'+d.getMonth()+'-0'+d.getDay()+'-'+d.getFullYear()+'.csv';
+}*/
 $.ajax({
   type: "GET",
+  //url:urlf,
   url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
   dataType: "text",
   success: function(data) {processData(data);}
@@ -302,12 +318,24 @@ function processData(allText) {
       }
     }
   }
-  console.log(confirmeddata[0]);
+  console.log(confirmeddata);
   if (true) {
     for (var i = 0; i < confirmeddata.length; i++) {
       for (var q = 0; q < countryList.length; q++) {
         if (countryList[q].name == confirmeddata[i].Country_Region) {
-          infectedcountries.push({"id": countryList[q].code, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]]});
+          infectedcountries.push({"id": countryList[q].code, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
+  console.log("stuck here");
+        }
+      /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
+          infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
+        }*/
+      }
+    }
+    for (var i = 0; i < confirmeddata.length; i++) {
+      for (var q = 0; q < countryList.length; q++) {
+       if (countryList[q].code == confirmeddata[i].Country_Region) {
+          infectedcountries.push({"id": countryList[q].code, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
+          console.log("stuck here2");
         }
       }
     }
@@ -315,7 +343,8 @@ function processData(allText) {
   for (var i = 0; i < infectedcountries.length; i++) {
     for (var q = 0; q < infectedcountries.length; q++) {
       if (q!=i && infectedcountries[i].id == infectedcountries[q].id) {
-        infectedcountries[i].Total_Confirmed_cases+=infectedcountries.splice(q);
+        infectedcountries[i].Total_Confirmed_cases+=parseInt(infectedcountries[q].Total_Confirmed_cases)
+        //infectedcountries.splice(q);
       }
     }
   }

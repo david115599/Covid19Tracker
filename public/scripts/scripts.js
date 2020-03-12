@@ -392,10 +392,11 @@ polygonSeries.data = infectedcountries
 
 $.ajax({
   type: "GET",
-  url: "http://cowid.netlify.com/data/full_data.csv",
+  url: "https://raw.githubusercontent.com/owid/covid-19-who/master/data/full_data.csv",
   dataType: "text",
   success: function(data) {processData(data);}
 });
+
 
 function processData(allText) {
   //console.log(allText);

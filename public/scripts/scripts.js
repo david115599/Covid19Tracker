@@ -331,7 +331,7 @@ else if (d.getDay()<10) {
 urlf = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/'+d.getMonth()+'-0'+d.getDay()+'-'+d.getFullYear()+'.csv';
 }*/
 //large block comment starts here///////////////////////////////////////////////////
-
+/*
 $.ajax({
 type: "GET",
 //url:urlf,
@@ -365,7 +365,7 @@ console.log("stuck here");
 /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
 infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
 }*/
-}
+/*}
 }
 for (var i = 0; i < confirmeddata.length; i++) {
 for (var q = 0; q < countryList.length; q++) {
@@ -386,9 +386,9 @@ infectedcountries[i].Total_Confirmed_cases+=parseInt(infectedcountries[q].Total_
 }
 console.log(infectedcountries);
 polygonSeries.data = infectedcountries
-}
+}*/
 //large block comment ends here///////////////////////////////////////////////////
-/*
+
 
 $.ajax({
   type: "GET",
@@ -427,10 +427,10 @@ function processData(allText) {
       /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
       infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
     }*/
-    /*}
+    }
   }
     console.log(confirmeddata);
   //  console.log(thisdate);
 
     polygonSeries.data = infectedcountries
-}*/
+}

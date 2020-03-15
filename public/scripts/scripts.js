@@ -1,5 +1,5 @@
 var d = new Date();
-var val = "0";
+var buttonval = "0";
 var countryList = [
   {"name": "Afghanistan", "code": "AF"},
   {"name": "land Islands", "code": "AX"},
@@ -118,9 +118,9 @@ var countryList = [
   {"name": "Kenya", "code": "KE"},
   {"name": "Kiribati", "code": "KI"},
   {"name": 'Korea, Democratic People"S Republic of', "code": "KP"},
-    {"name": 'North Korea', "code": "KP"},
+  {"name": 'North Korea', "code": "KP"},
   {"name": "Korea, Republic of", "code": "KR"},
-    {"name": "South Korea", "code": "KR"},
+  {"name": "South Korea", "code": "KR"},
   {"name": "Kuwait", "code": "KW"},
   {"name": "Kyrgyzstan", "code": "KG"},
   {"name": 'Lao People"S Democratic Republic', "code": "LA"},
@@ -134,7 +134,7 @@ var countryList = [
   {"name": "Luxembourg", "code": "LU"},
   {"name": "Macao", "code": "MO"},
   {"name": "Macedonia, The Former Yugoslav Republic of", "code": "MK"},
-    {"name": "Macedonia", "code": "MK"},
+  {"name": "Macedonia", "code": "MK"},
   {"name": "Madagascar", "code": "MG"},
   {"name": "Malawi", "code": "MW"},
   {"name": "Malaysia", "code": "MY"},
@@ -149,7 +149,7 @@ var countryList = [
   {"name": "Mexico", "code": "MX"},
   {"name": "Micronesia, Federated States of", "code": "FM"},
   {"name": "Moldova, Republic of", "code": "MD"},
-    {"name": "Moldova", "code": "MD"},
+  {"name": "Moldova", "code": "MD"},
   {"name": "Monaco", "code": "MC"},
   {"name": "Mongolia", "code": "MN"},
   {"name": "Montenegro", "code": "ME"},
@@ -175,7 +175,7 @@ var countryList = [
   {"name": "Pakistan", "code": "PK"},
   {"name": "Palau", "code": "PW"},
   {"name": "Palestinian Territory, Occupied", "code": "PS"},
-    {"name": "Palestine", "code": "PS"},
+  {"name": "Palestine", "code": "PS"},
   {"name": "Panama", "code": "PA"},
   {"name": "Papua New Guinea", "code": "PG"},
   {"name": "Paraguay", "code": "PY"},
@@ -255,40 +255,108 @@ var countryList = [
   {"name": "Zimbabwe", "code": "ZW"},
   {"name": "Mainland China", "code": "CN"}
 ];
-// Create map instance
-var chart = am4core.create("chartdiv", am4maps.MapChart);
-
-// Set map definition
-chart.geodata = am4geodata_worldLow;
-
-// Set projection
-chart.projection = new am4maps.projections.Miller();
-
-// Create map polygon series
-var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
-
-// Make map load polygon (like country names) data from GeoJSON
-polygonSeries.useGeodata = true;
-
-// Configure series
-var polygonTemplate = polygonSeries.mapPolygons.template;
-polygonTemplate.tooltipText = "{name}: | Confirmed Cases: {Total_Confirmed_cases} | Deaths:{Deaths}";
-polygonTemplate.fill = am4core.color("#4298D6");
 
 
-// Create hover state and set alternative fill color
-var hs = polygonTemplate.states.create("hover");
-hs.properties.fill = am4core.color("#D8C052");
+$.ajax({
+  type: "GET",
+  url: "https://raw.githubusercontent.com/owid/covid-19-who/master/public/data/full_data.csv",
+  dataType: "text",
+  success: function(data) {processData(data);}
+});
 
-// Remove Antarctica
-polygonSeries.exclude = ["AQ"];
-//
-// Add heat rule
+
+function processData(allText) {
+  // Create map instance
+  var chart = am4core.create("chartdiv", am4maps.MapChart);
+
+  // Set map definition
+  chart.geodata = am4geodata_worldLow;
+
+  // Set projection
+  chart.projection = new am4maps.projections.Miller();
+
+  // Create map polygon series
+  var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+
+  // Make map load polygon (like country names) data from GeoJSON
+  polygonSeries.useGeodata = true;
+
+  // Configure series
+  var polygonTemplate = polygonSeries.mapPolygons.template;
+  polygonTemplate.tooltipText = "{name}: | Confirmed Cases: {Total_Confirmed_cases} | Deaths:{Deaths}";
+  polygonTemplate.fill = am4core.color("#EFD6AC");
+
+
+  // Create hover state and set alternative fill color
+  var hs = polygonTemplate.states.create("hover");
+  hs.properties.fill = am4core.color("#C6D8AF");
+
+  // Remove Antarctica
+  polygonSeries.exclude = ["AQ"];
+
+
+  var confirmeddata = [];
+  var infectedcountries = [];
+  var urlf;
+  var thisdate;
+  var latest_stats=[];
+  month = d.getMonth()+1;
+  if (d.getMonth()+1<10) {
+    if (d.getDate()<10) {
+      thisdate = d.getFullYear()+'-0'+(month)+'-0'+d.getDate();
+    }
+    thisdate = d.getFullYear()+'-0'+(month)+'-'+d.getDate();
+  }
+  else if (d.getDay()<10) {
+    thisdate = d.getFullYear()+'-'+(month)+'-0'+d.getDate();
+  }
+  //console.log(allText);
+  var temp = allText.split("/").join("_")
+  var allTextLines = temp.split(/\r\n|\n/);
+  var headers = allTextLines[0].split(',');
+
+  //console.log(headers);
+  for (var i=0; i<allTextLines.length; i++) {
+    var data = allTextLines[i].split(',');
+    confirmeddata[i] = {};
+    if (data.length == headers.length) {
+      for (var q = 0; q < headers.length; q++) {
+        confirmeddata[i][headers[q]] = data[q];
+      }
+    }
+  }
+  for (var i = 0; i < confirmeddata.length-1; i++) {
+    //console.log(confirmeddata[i].date+"got here"+confirmeddata[confirmeddata.length-2].date);
+    if (confirmeddata[i].date == confirmeddata[confirmeddata.length-2].date) {
+      latest_stats.push(confirmeddata[i]);
+      //console.log("also got here");
+    }
+  }
+  for (var i = 0; i < latest_stats.length; i++) {
+    for (var q = 0; q < countryList.length; q++) {
+      if (countryList[q].name == latest_stats[i].location) {
+        if (buttonval == "0") {
+          infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_cases  });
+        }
+        else if  (buttonval == "1") {
+          infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_deaths  });
+        }
+        console.log(buttonval);
+      }
+      /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
+      infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
+    }*/
+  }
+}
+//console.log(confirmeddata);
+//  console.log(thisdate);
+
+polygonSeries.data = infectedcountries
 polygonSeries.heatRules.push({
   "property": "fill",
   "target": polygonSeries.mapPolygons.template,
-  "min": am4core.color("#BBC8CA"),
-  "max": am4core.color("#C4365F")
+  "min": am4core.color("#FFC07F"),
+  "max": am4core.color("#6B0F1A")
 });
 
 // Add heat legend
@@ -307,84 +375,16 @@ polygonSeries.mapPolygons.template.events.on("over", function(ev) {
 polygonSeries.mapPolygons.template.events.on("out", function(ev) {
   heatLegend.valueAxis.hideTooltip();
 });
-
-var confirmeddata = [];
-var infectedcountries = [];
-var urlf;
-var thisdate;
-var latest_stats=[];
-month = d.getMonth()+1;
-if (d.getMonth()+1<10) {
-  if (d.getDate()<10) {
-    thisdate = d.getFullYear()+'-0'+(month)+'-0'+d.getDate();
-  }
-  thisdate = d.getFullYear()+'-0'+(month)+'-'+d.getDate();
-}
-else if (d.getDay()<10) {
-  thisdate = d.getFullYear()+'-'+(month)+'-0'+d.getDate();
-}
-
-$.ajax({
-  type: "GET",
-  url: "https://raw.githubusercontent.com/owid/covid-19-who/master/public/data/full_data.csv",
-  dataType: "text",
-  success: function(data) {processData(data);}
-});
-
-
-function processData(allText) {
-  //console.log(allText);
-  var temp = allText.split("/").join("_")
-  var allTextLines = temp.split(/\r\n|\n/);
-  var headers = allTextLines[0].split(',');
-
-  //console.log(headers);
-  for (var i=0; i<allTextLines.length; i++) {
-    var data = allTextLines[i].split(',');
-    confirmeddata[i] = {};
-    if (data.length == headers.length) {
-      for (var q = 0; q < headers.length; q++) {
-        confirmeddata[i][headers[q]] = data[q];
-      }
-    }
-  }
-  for (var i = 0; i < confirmeddata.length-1; i++) {
-         //console.log(confirmeddata[i].date+"got here"+confirmeddata[confirmeddata.length-2].date);
-    if (confirmeddata[i].date == confirmeddata[confirmeddata.length-2].date) {
-      latest_stats.push(confirmeddata[i]);
-           //console.log("also got here");
-    }
-  }
-  for (var i = 0; i < latest_stats.length; i++) {
-    for (var q = 0; q < countryList.length; q++) {
-      if (countryList[q].name == latest_stats[i].location) {
-        if (val == "0") {
-          infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_cases  });
-        }
-        else if  (val == "1") {
-          infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_deaths  });
-        }
-        console.log(val);
-      }
-      /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
-      infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
-    }*/
-  }
-}
-//console.log(confirmeddata);
-//  console.log(thisdate);
-
-polygonSeries.data = infectedcountries
 }
 
 const selectElement = document.querySelector('#mapdat');
 
 selectElement.addEventListener('change', (event) => {
-   val = $("#mapdat").attr("value");
-   $.ajax({
-     type: "GET",
-     url: "https://raw.githubusercontent.com/owid/covid-19-who/master/public/data/full_data.csv",
-     dataType: "text",
-     success: function(data) {processData(data);}
-   });
+  buttonval = $("#mapdat").val();
+  $.ajax({
+    type: "GET",
+    url: "https://raw.githubusercontent.com/owid/covid-19-who/master/public/data/full_data.csv",
+    dataType: "text",
+    success: function(data) {processData(data);}
+  });
 });

@@ -300,6 +300,8 @@ function processData(allText) {
   var urlf;
   var thisdate;
   var latest_stats=[];
+  var content ='<option value= "0"> Select a Country/Region </option>';
+
   month = d.getMonth()+1;
   if (d.getMonth()+1<10) {
     if (d.getDate()<10) {
@@ -337,11 +339,14 @@ function processData(allText) {
       if (countryList[q].name == latest_stats[i].location) {
         if (buttonval == "0") {
           infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_cases  });
+          content+=  '<option value= '+countryList[q].code+' >'+latest_stats[i].location+' </option>';
         }
         else if  (buttonval == "1") {
           infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_deaths  });
+          content+=  '<option value= '+countryList[q].code+'>'+latest_stats[i].location+' </option>';
         }
-        console.log(buttonval);
+
+        //console.log(buttonval);
       }
       /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
       infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
@@ -349,8 +354,8 @@ function processData(allText) {
   }
 }
 //console.log(confirmeddata);
-//  console.log(thisdate);
-
+//  console.log(content);
+$('#countryselect').html(content);
 polygonSeries.data = infectedcountries
 polygonSeries.heatRules.push({
   "property": "fill",

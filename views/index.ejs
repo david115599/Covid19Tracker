@@ -2,8 +2,8 @@
 <html>
 <head>
   <!-- Global site tag (gtag.js) - Google Analytics-->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64040181-5"></script>
-<script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-64040181-5"></script>
+  <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -11,32 +11,36 @@
   gtag('config', 'UA-64040181-5');
 </script>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <script src="//www.amcharts.com/lib/4/core.js"></script>
-  <script src="//www.amcharts.com/lib/4/charts.js"></script>
-  <script src="//www.amcharts.com/lib/4/maps.js"></script>
-  <script src="//www.amcharts.com/lib/4/geodata/worldLow.js"></script>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="https://kit.fontawesome.com/cb87cedded.js" crossorigin="anonymous"></script>
-  <title>Covid-19 Tracker</title>
-  <% include global/header%>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="//www.amcharts.com/lib/4/core.js"></script>
+<script src="//www.amcharts.com/lib/4/charts.js"></script>
+<script src="//www.amcharts.com/lib/4/maps.js"></script>
+<script src="//www.amcharts.com/lib/4/geodata/worldLow.js"></script>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/cb87cedded.js" crossorigin="anonymous"></script>
+<title>Covid-19 Tracker</title>
+<% include global/header%>
 </head>
 <body>
   <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <h1>WARNING: THIS WEBSITE IS STILL UNDER DEVELPMENT AND DATA DISPLAYED IS PROBABLY WRONG</h1>
-    <form>
+    <div class="input-group">
       <select class="form-control" name="sh" id="mapdat">
-        <option value="0" id="infect">Infection Stats</option>
-        <option value="1" id="death">Death Stats</option>
+        <option value="0" id="infect">Showing Infection Data</option>
+        <option value="1" id="death">Showing Death Data</option>
       </select>
-    </form>
+      <select class="form-control" name="sh" id="countryselect">
+        <option value="0" id="infect">Showing Infection Data</option>
+        <option value="1" id="death">Showing Death Data</option>
+      </select>
+    </div>
     <div class="d-flex justify-content-center">
       <div id="chartdiv"style=" width: 80%;
-  height: 80vh;"contentAlign = "center"></div>
+      height: 80vh;"contentAlign = "center"></div>
     </div>
-<iframe width="100%" height="750" frameborder="0" class="rssdog" src="https://www.rssdog.com/index.php?url=https%3A%2F%2Fwww.who.int%2Ffeeds%2Fentity%2Fcsr%2Fdon%2Fen%2Frss.xml&mode=html&showonly=&maxitems=0&showdescs=1&desctrim=0&descmax=0&tabwidth=100%25&linktarget=_blank&textsize=inherit&bordercol=%23d4d0c8&headbgcol=%23999999&headtxtcol=%23ffffff&titlebgcol=%23f1eded&titletxtcol=%23000000&itembgcol=%23ffffff&itemtxtcol=%23000000&ctl=0"></iframe>
+    <iframe width="100%" height="750" frameborder="0" class="rssdog" src="https://www.rssdog.com/index.php?url=https%3A%2F%2Fwww.who.int%2Ffeeds%2Fentity%2Fcsr%2Fdon%2Fen%2Frss.xml&mode=html&showonly=&maxitems=0&showdescs=1&desctrim=0&descmax=0&tabwidth=100%25&linktarget=_blank&textsize=inherit&bordercol=%23d4d0c8&headbgcol=%23999999&headtxtcol=%23ffffff&titlebgcol=%23f1eded&titletxtcol=%23000000&itembgcol=%23ffffff&itemtxtcol=%23000000&ctl=0"></iframe>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

@@ -294,8 +294,8 @@ polygonSeries.heatRules.push({
 var heatLegend = chart.createChild(am4maps.HeatLegend);
 heatLegend.series = polygonSeries;
 heatLegend.width = am4core.percent(100);
-
 polygonSeries.mapPolygons.template.events.on("over", function(ev) {
+  valueAxis.logarithmic = true;
   if (!isNaN(ev.target.dataItem.value)) {
     heatLegend.valueAxis.showTooltipAt(ev.target.dataItem.value)
   }

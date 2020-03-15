@@ -422,10 +422,10 @@ function processData(allText) {
     }
   }
   for (var i = 0; i < confirmeddata.length-1; i++) {
-         console.log(confirmeddata[i].date+"got here"+confirmeddata[confirmeddata.length-2].date);
-    if (confirmeddata[i].date == thisdate) {
+         //console.log(confirmeddata[i].date+"got here"+confirmeddata[confirmeddata.length-2].date);
+    if (confirmeddata[i].date == confirmeddata[confirmeddata.length-2].date) {
       latest_stats.push(confirmeddata[i]);
-           console.log("also got here");
+           //console.log("also got here");
     }
   }
 

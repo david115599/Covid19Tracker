@@ -440,10 +440,10 @@ function processData(allText) {
       thisdate = d.getFullYear()+'-'+(month)+'-0'+(d.getDate()-1);
     }
     for (var i = 0; i < confirmeddata.length-1; i++) {
-           console.log(confirmeddata[i].date+"got here"+thisdate);
+        //   console.log(confirmeddata[i].date+"got here"+thisdate);
       if (confirmeddata[i].date == thisdate) {
         latest_stats.push(confirmeddata[i]);
-             console.log("also got here");
+          //   console.log("also got here");
       }
     }
   }

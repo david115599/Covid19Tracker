@@ -392,7 +392,7 @@ polygonSeries.data = infectedcountries
 
 $.ajax({
   type: "GET",
-  url: "https://raw.githubusercontent.com/owid/covid-19-who/master/data/full_data.csv",
+  url: "https://raw.githubusercontent.com/owid/covid-19-who/master/public/data/full_data.csv",
   dataType: "text",
   success: function(data) {processData(data);}
 });

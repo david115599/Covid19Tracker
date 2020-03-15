@@ -380,7 +380,7 @@ polygonSeries.data = infectedcountries
 const selectElement = document.querySelector('#mapdat');
 
 selectElement.addEventListener('change', (event) => {
-   val = $("#mapdat").val();
+   val = $("#mapdat").attr("value");
    $.ajax({
      type: "GET",
      url: "https://raw.githubusercontent.com/owid/covid-19-who/master/public/data/full_data.csv",

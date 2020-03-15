@@ -103,7 +103,6 @@ var countryList = [
   {"name": "India", "code": "IN"},
   {"name": "Indonesia", "code": "ID"},
   {"name": "Iran, Islamic Republic Of", "code": "IR"},
-  {"name": "Iran", "code": "IR"},
   {"name": "Iraq", "code": "IQ"},
   {"name": "Ireland", "code": "IE"},
   {"name": "Isle of Man", "code": "IM"},
@@ -183,7 +182,7 @@ var countryList = [
   {"name": "Reunion", "code": "RE"},
   {"name": "Romania", "code": "RO"},
   {"name": "Russian Federation", "code": "RU"},
-  {"name": "Russia", "code": "RU"},
+    {"name": "Russia", "code": "RU"},
   {"name": "RWANDA", "code": "RW"},
   {"name": "Saint Helena", "code": "SH"},
   {"name": "Saint Kitts and Nevis", "code": "KN"},
@@ -430,10 +429,10 @@ function processData(allText) {
       /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
       infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
     }*/
+    }
   }
-}
-console.log(confirmeddata);
-//  console.log(thisdate);
+    console.log(confirmeddata);
+  //  console.log(thisdate);
 
-polygonSeries.data = infectedcountries
+    polygonSeries.data = infectedcountries
 }

@@ -300,8 +300,8 @@ function processData(allText) {
   var urlf;
   var thisdate;
   var latest_stats=[];
-  var content ='<option value= "0"> Select a Country/Region </option>';
-
+  //var content ='<option value= "0"> Select a Country/Region </option>';
+var content ="";
   month = d.getMonth()+1;
   if (d.getMonth()+1<10) {
     if (d.getDate()<10) {

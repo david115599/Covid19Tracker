@@ -411,7 +411,7 @@ function processData(allText) {
   var allTextLines = temp.split(/\r\n|\n/);
   var headers = allTextLines[0].split(',');
 
-  console.log(headers);
+  //console.log(headers);
   for (var i=0; i<allTextLines.length; i++) {
     var data = allTextLines[i].split(',');
     confirmeddata[i] = {};
@@ -430,14 +430,14 @@ function processData(allText) {
     for (var q = 0; q < countryList.length; q++) {
       if (countryList[q].name == latest_stats[i].location) {
         infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_cases  });
-        console.log("stuck here");
+    //    console.log("stuck here");
       }
       /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
       infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
     }*/
   }
 }
-console.log(confirmeddata);
+//console.log(confirmeddata);
 //  console.log(thisdate);
 
 polygonSeries.data = infectedcountries

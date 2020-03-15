@@ -421,11 +421,33 @@ function processData(allText) {
       }
     }
   }
-  for (var i = 0; i < confirmeddata.length; i++) {
+  for (var i = 0; i < confirmeddata.length-1; i++) {
+         console.log(confirmeddata[i].date+"got here"+thisdate);
     if (confirmeddata[i].date == thisdate) {
-      latest_stats.push(confirmeddata[i])
+      latest_stats.push(confirmeddata[i]);
+           console.log("also got here");
     }
   }
+  if (latest_stats.length == 0) {
+    month = d.getMonth()+1;
+    if (d.getMonth()+1<10) {
+      if (d.getDate()<10) {
+        thisdate = d.getFullYear()+'-0'+(month)+'-0'+(d.getDate()-1);
+      }
+      thisdate = d.getFullYear()+'-0'+(month)+'-'+(d.getDate()-1);
+    }
+    else if (d.getDay()<10) {
+      thisdate = d.getFullYear()+'-'+(month)+'-0'+(d.getDate()-1);
+    }
+    for (var i = 0; i < confirmeddata.length-1; i++) {
+           console.log(confirmeddata[i].date+"got here"+thisdate);
+      if (confirmeddata[i].date == thisdate) {
+        latest_stats.push(confirmeddata[i]);
+             console.log("also got here");
+      }
+    }
+  }
+
   for (var i = 0; i < latest_stats.length; i++) {
     for (var q = 0; q < countryList.length; q++) {
       if (countryList[q].name == latest_stats[i].location) {

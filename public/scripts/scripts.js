@@ -255,7 +255,9 @@ var countryList = [
   {"name": "Zimbabwe", "code": "ZW"},
   {"name": "Mainland China", "code": "CN"}
 ];
-
+// Create map instance
+var chart = am4core.create("chartdiv", am4maps.MapChart);
+var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
 
 $.ajax({
   type: "GET",
@@ -266,17 +268,16 @@ $.ajax({
 
 
 function processData(allText) {
-  // Create map instance
-  var chart = am4core.create("chartdiv", am4maps.MapChart);
+chart = am4core.create("chartdiv", am4maps.MapChart);
 
-  // Set map definition
-  chart.geodata = am4geodata_worldLow;
+// Set map definition
+chart.geodata = am4geodata_worldLow;
 
-  // Set projection
-  chart.projection = new am4maps.projections.Miller();
+// Set projection
+chart.projection = new am4maps.projections.Miller();
 
-  // Create map polygon series
-  var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+// Create map polygon series
+ polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
 
   // Make map load polygon (like country names) data from GeoJSON
   polygonSeries.useGeodata = true;
@@ -286,6 +287,21 @@ function processData(allText) {
   polygonTemplate.tooltipText = "{name}: | Confirmed Cases: {Total_Confirmed_cases} | Deaths:{Deaths}";
   polygonTemplate.fill = am4core.color("#EFD6AC");
 
+  var lastSelected;
+  polygonTemplate.events.on("hit", function(ev) {
+    if (lastSelected) {
+      // This line serves multiple purposes:
+      // 1. Clicking a country twice actually de-activates, the line below
+      //    de-activates it in advance, so the toggle then re-activates, making it
+      //    appear as if it was never de-activated to begin with.
+      // 2. Previously activated countries should be de-activated.
+      lastSelected.isActive = false;
+    }
+    ev.target.series.chart.zoomToMapObject(ev.target);
+    if (lastSelected !== ev.target) {
+      lastSelected = ev.target;
+    }
+  })
 
   // Create hover state and set alternative fill color
   var hs = polygonTemplate.states.create("hover");
@@ -293,15 +309,34 @@ function processData(allText) {
 
   // Remove Antarctica
   polygonSeries.exclude = ["AQ"];
+  chart.smallMap = new am4maps.SmallMap();
+  // Re-position to top right (it defaults to bottom left)
+  chart.smallMap.align = "left";
+  chart.smallMap.valign = "bottom";
+  chart.smallMap.series.push(polygonSeries);
 
+  // Zoom control
+  chart.zoomControl = new am4maps.ZoomControl();
+
+  var homeButton = new am4core.Button();
+  homeButton.events.on("hit", function(){
+    chart.goHome();
+  });
+
+  homeButton.icon = new am4core.Sprite();
+  homeButton.padding(7, 5, 7, 5);
+  homeButton.width = 30;
+  homeButton.icon.path = "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8";
+  homeButton.marginBottom = 10;
+  homeButton.parent = chart.zoomControl;
+  homeButton.insertBefore(chart.zoomControl.plusButton);
 
   var confirmeddata = [];
   var infectedcountries = [];
   var urlf;
   var thisdate;
   var latest_stats=[];
-  //var content ='<option value= "0"> Select a Country/Region </option>';
-var content ="";
+  var content ='<option value= "0"> Select a Country/Region </option>';
   month = d.getMonth()+1;
   if (d.getMonth()+1<10) {
     if (d.getDate()<10) {
@@ -383,7 +418,6 @@ polygonSeries.mapPolygons.template.events.on("out", function(ev) {
 }
 
 const selectElement = document.querySelector('#mapdat');
-
 selectElement.addEventListener('change', (event) => {
   buttonval = $("#mapdat").val();
   $.ajax({
@@ -392,4 +426,12 @@ selectElement.addEventListener('change', (event) => {
     dataType: "text",
     success: function(data) {processData(data);}
   });
+});
+
+
+const selectElement2 = document.querySelector('#countryselect');
+selectElement2.addEventListener('change', (event) => {
+  var countryval = $("#countryselect").val();
+chart.zoomToMapObject(polygonSeries.getPolygonById(countryval));
+
 });

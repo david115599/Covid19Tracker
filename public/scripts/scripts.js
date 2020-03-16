@@ -255,6 +255,50 @@ var countryList = [
   {"name": "Zimbabwe", "code": "ZW"},
   {"name": "Mainland China", "code": "CN"}
 ];
+
+  var population = [];
+
+$.ajax({
+  type: "GET",
+  url: "/data/worldpop.csv",
+  dataType: "text",
+  success: function(data) {getpopulation(data);}
+});
+
+
+function getpopulation(allText) {
+  //console.log(allText);
+  var temp = allText.split("/").join("_")
+  var allTextLines = temp.split(/\r\n|\n/);
+  var headers = (allTextLines[0].split(" ").join("_")).toString().split(',');
+
+  /*console.log(temp);
+  console.log(allTextLines);*/
+  //  console.log(headers);
+
+  //console.log(headers);
+  for (var i=0; i<allTextLines.length; i++) {
+    var data = allTextLines[i].split(',');
+    population[i] = {};
+    for (var q = 0; q < headers.length; q++) {
+      population[i][headers[q]] = data[q];
+      //  console.log(data[q]);
+    }
+  }
+  for (var i=0; i<population.length-1; i++) {
+  /*  console.log(population[i]['"Country_Code"'].substring(1,3));
+    console.log(population[i]['"Country_Code"']);
+    console.log(population[i]['"2019"'].substring(1, population[i]['"2019"'].length - 1));*/
+  }
+  //console.log("population");
+//  console.log(population);
+}
+
+
+
+
+
+
 // Create map instance
 var chart = am4core.create("chartdiv", am4maps.MapChart);
 var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
@@ -268,16 +312,16 @@ $.ajax({
 
 
 function processData(allText) {
-chart = am4core.create("chartdiv", am4maps.MapChart);
+  chart = am4core.create("chartdiv", am4maps.MapChart);
 
-// Set map definition
-chart.geodata = am4geodata_worldLow;
+  // Set map definition
+  chart.geodata = am4geodata_worldLow;
 
-// Set projection
-chart.projection = new am4maps.projections.Miller();
+  // Set projection
+  chart.projection = new am4maps.projections.Miller();
 
-// Create map polygon series
- polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+  // Create map polygon series
+  polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
 
   // Make map load polygon (like country names) data from GeoJSON
   polygonSeries.useGeodata = true;
@@ -368,7 +412,7 @@ chart.projection = new am4maps.projections.Miller();
     if (confirmeddata[i].date == confirmeddata[confirmeddata.length-2].date) {
       latest_stats.push(confirmeddata[i]);
       //console.log("also got here");
-    /*  'Total Cases<span class="badge badge-light">'+latest_stats[latest_stats.length-1].total_cases+'</span>, New Cases <span class="badge badge-light">'+latest_stats[latest_stats.length-1].new_cases+'</span>, Total Deaths <span class="badge badge-light">'+latest_stats[latest_stats.length-1].total_deaths+'</span>, New Deaths <span class="badge badge-light">'+latest_stats[latest_stats.length-1].new_deaths+'</span>, Last Updated <span class="badge badge-light">'+latest_stats[latest_stats.length-1].date+'</span>'*/
+      /*  'Total Cases<span class="badge badge-light">'+latest_stats[latest_stats.length-1].total_cases+'</span>, New Cases <span class="badge badge-light">'+latest_stats[latest_stats.length-1].new_cases+'</span>, Total Deaths <span class="badge badge-light">'+latest_stats[latest_stats.length-1].total_deaths+'</span>, New Deaths <span class="badge badge-light">'+latest_stats[latest_stats.length-1].new_deaths+'</span>, Last Updated <span class="badge badge-light">'+latest_stats[latest_stats.length-1].date+'</span>'*/
     }
   }
   //console.log(latest_stats[latest_stats.length-1]);
@@ -387,7 +431,11 @@ chart.projection = new am4maps.projections.Miller();
           content+=  '<option value= '+countryList[q].code+'>'+latest_stats[i].location+' </option>';
           stattablevar+='<div class="row"><div class="col-sm">'+latest_stats[i].location+'</div><div class="col-sm">'+latest_stats[i].total_cases+'</div><div class="col-sm">'+latest_stats[i].total_deaths+'</div></div><hr>';
         }
-
+        else if  (buttonval == "2") {
+          infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":(latest_stats[i].total_deaths/(population[i]['"2019"'].substring(1, population[i]['"2019"'].length - 1)))  });
+          content+=  '<option value= '+countryList[q].code+'>'+latest_stats[i].location+' </option>';
+          stattablevar+='<div class="row"><div class="col-sm">'+latest_stats[i].location+'</div><div class="col-sm">'+latest_stats[i].total_cases+'</div><div class="col-sm">'+latest_stats[i].total_deaths+'</div></div><hr>';
+        }
 
         //console.log(buttonval);
       }
@@ -396,7 +444,7 @@ chart.projection = new am4maps.projections.Miller();
     }*/
   }
 }
-  $('#stattable').html(stattablevar);
+$('#stattable').html(stattablevar);
 //console.log(confirmeddata);
 //  console.log(content);
 $('#countryselect').html(content);
@@ -444,8 +492,8 @@ selectElement.addEventListener('change', (event) => {
 const selectElement2 = document.querySelector('#countryselect');
 selectElement2.addEventListener('change', (event) => {
   var countryval = $("#countryselect").val();
-chart.zoomToMapObject(polygonSeries.getPolygonById(countryval));
-if (countryval == 0) {
-  chart.goHome();
-}
+  chart.zoomToMapObject(polygonSeries.getPolygonById(countryval));
+  if (countryval == 0) {
+    chart.goHome();
+  }
 });

@@ -26,13 +26,13 @@
 
 <style media="screen">
 div#stattablediv{
- width: 19%;
+  width: 19%;
 }
 @media only screen and (max-device-width: 480px) {
-div#stattablediv{
- width: 99%;
-}
+  div#stattablediv{
+    width: 99%;
   }
+}
 </style>
 
 </head>
@@ -42,8 +42,10 @@ div#stattablediv{
     </div>
     <div class="input-group">
       <select class="form-control" name="sh" id="mapdat">
+        <option value="0" id="Default">Choose Data Set: Infection(default), Deaths, Cases/Capita</option>
         <option value="0" id="infect">Showing Infection Data</option>
         <option value="1" id="death">Showing Death Data</option>
+        <option value="2" id="Captia">Cases Per Capita</option>
       </select>
       <select class="form-control" name="sh" id="countryselect">
       </select>

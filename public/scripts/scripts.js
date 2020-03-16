@@ -401,6 +401,7 @@ chart.projection = new am4maps.projections.Miller();
 //  console.log(content);
 $('#countryselect').html(content);
 polygonSeries.data = infectedcountries
+var heatLegend = chart.createChild(am4maps.HeatLegend);
 polygonSeries.heatRules.push({
   "property": "fill",
   "target": polygonSeries.mapPolygons.template,
@@ -409,9 +410,11 @@ polygonSeries.heatRules.push({
 });
 
 // Add heat legend
-var heatLegend = chart.createChild(am4maps.HeatLegend);
+
 heatLegend.series = polygonSeries;
 heatLegend.width = am4core.percent(100);
+heatLegend.valueAxis.renderer.labels.template.fontSize = 12;
+heatLegend.valueAxis.renderer.minGridDistance = 60;
 polygonSeries.mapPolygons.template.events.on("over", function(ev) {
   if (!isNaN(ev.target.dataItem.value)) {
     heatLegend.valueAxis.showTooltipAt(ev.target.dataItem.value)

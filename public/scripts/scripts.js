@@ -474,7 +474,7 @@ function makemap(compliedstats) {
       // 2. Previously activated countries should be de-activated.
       lastSelected.isActive = false;
     }
-  //  console.log(ev.target.polygon._dataItem._dataContext.id);
+    //  console.log(ev.target.polygon._dataItem._dataContext.id);
     countryval =ev.target.polygon._dataItem._dataContext.id;
     ev.target.series.chart.zoomToMapObject(ev.target);
     if (lastSelected !== ev.target) {
@@ -685,6 +685,10 @@ function maketimeseries(){
   // Create  axis
   var valueAxis = timechart.yAxes.push(new am4charts.ValueAxis());
   var valueAxis2 = timechart.xAxes.push(new am4charts.ValueAxis());
+  valueAxis.title.text = "Confirmed Cases";
+  valueAxis.title.fontWeight = "bold";
+  valueAxis2.title.text = "Days Since January 22";
+  valueAxis2.title.fontWeight = "bold";
   //valueAxis.logarithmic = true;
   //console.log(timechart.data);
 
@@ -748,12 +752,18 @@ if (countryval != 0) {
           series4.name = countryList[q].name;
           series4.tooltipText = "{valueX}: [b]{valueY}[/]";
           series4.strokeWidth = 2;
-        //console.log(countryList[q].name,timeseriesdatacase[i].location,countryval);
+          //console.log(countryList[q].name,timeseriesdatacase[i].location,countryval);
         }
       }
     }
   }
 }
+series1.stroke = am4core.color("#E58332");
+series1.fill = am4core.color("#E58332");
+series2.stroke = am4core.color("#C4365F");
+series2.fill = am4core.color("#C4365F");
+series3.stroke = am4core.color("#D8C052");
+series3.fill = am4core.color("#D8C052");
 timechart.legend = new am4charts.Legend();
 timechart.cursor = new am4charts.XYCursor();
 maketimeseries1();
@@ -789,6 +799,10 @@ function maketimeseries1(){
   // Create  axis
   var valueAxis = timechart.yAxes.push(new am4charts.ValueAxis());
   var valueAxis2 = timechart.xAxes.push(new am4charts.ValueAxis());
+  valueAxis.title.text = "Deaths";
+  valueAxis.title.fontWeight = "bold";
+  valueAxis2.title.text = "Days Since January 22";
+  valueAxis2.title.fontWeight = "bold";
   //valueAxis.logarithmic = true;
   //console.log(timechart.data);
 
@@ -852,12 +866,19 @@ if (countryval != 0) {
           series4.name = countryList[q].name;
           series4.tooltipText = "{valueX}: [b]{valueY}[/]";
           series4.strokeWidth = 2;
-        //console.log(countryList[q].name,timeseriesdatacase[i].location,countryval);
+          //console.log(countryList[q].name,timeseriesdatacase[i].location,countryval);
         }
       }
     }
   }
 }
+series1.stroke = am4core.color("#E58332");
+series1.fill = am4core.color("#E58332");
+series2.stroke = am4core.color("#C4365F");
+series2.fill = am4core.color("#C4365F");
+series3.stroke = am4core.color("#D8C052");
+series3.fill = am4core.color("#D8C052");
+
 timechart.legend = new am4charts.Legend();
 timechart.cursor = new am4charts.XYCursor();
 maketimeseries2();
@@ -891,6 +912,11 @@ function maketimeseries2(){
   // Create  axis
   var valueAxis = timechart.yAxes.push(new am4charts.ValueAxis());
   var valueAxis2 = timechart.xAxes.push(new am4charts.ValueAxis());
+
+  valueAxis.title.text = "Recovered";
+  valueAxis.title.fontWeight = "bold";
+  valueAxis2.title.text = "Days Since January 22";
+  valueAxis2.title.fontWeight = "bold";
   //valueAxis.logarithmic = true;
   //console.log(timechart.data);
 
@@ -910,35 +936,31 @@ function maketimeseries2(){
 var series1 = timechart.series.push(new am4charts.LineSeries());
 series1.dataFields.valueY = "US";
 series1.dataFields.valueX = "date";
-series1.strokeWidth = 3;
+series1.strokeWidth = 0;
 series1.tensionX = 0.8;
 series1.bullets.push(new am4charts.CircleBullet());
 series1.connect = false;
 series1.name = "US";
 series1.tooltipText = "{valueX}: [b]{valueY}[/]";
-series1.strokeWidth = 2;
 
 var series2 = timechart.series.push(new am4charts.LineSeries());
 series2.dataFields.valueY = "China";
 series2.dataFields.valueX = "date";
-series2.strokeWidth = 3;
 series2.tensionX = 0.8;
 series2.bullets.push(new am4charts.CircleBullet());
 series2.connect = false;
 series2.name = "China";
 series2.tooltipText = "{valueX}: [b]{valueY}[/]";
-series2.strokeWidth = 2;
+
 
 var series3 = timechart.series.push(new am4charts.LineSeries());
 series3.dataFields.valueY = "Italy";
 series3.dataFields.valueX = "date";
-series3.strokeWidth = 3;
 series3.tensionX = 0.8;
 series3.bullets.push(new am4charts.CircleBullet());
 series3.connect = false;
 series3.name = "Italy";
 series3.tooltipText = "{valueX}: [b]{valueY}[/]";
-series3.strokeWidth = 2;
 if (countryval != 0) {
   for (var i = 0; i < timeseriesdatarecov.length/dayssincestart; i++) {
     for (var q = 0; q < countryList.length; q++) {
@@ -954,12 +976,18 @@ if (countryval != 0) {
           series4.name = countryList[q].name;
           series4.tooltipText = "{valueX}: [b]{valueY}[/]";
           series4.strokeWidth = 2;
-        //console.log(countryList[q].name,timeseriesdatacase[i].location,countryval);
+          //console.log(countryList[q].name,timeseriesdatacase[i].location,countryval);
         }
       }
     }
   }
 }
+series1.stroke = am4core.color("#E58332");
+series1.fill = am4core.color("#E58332");
+series2.stroke = am4core.color("#C4365F");
+series2.fill = am4core.color("#C4365F");
+series3.stroke = am4core.color("#D8C052");
+series3.fill = am4core.color("#D8C052");
 timechart.legend = new am4charts.Legend();
 timechart.cursor = new am4charts.XYCursor();
 }

@@ -1,6 +1,12 @@
 var d = new Date();
 var buttonval = "0";
 var thisdate;
+var timeseriesdatacase = [];
+var timeseriesdatadeath = [];
+var timeseriesdatarecov = [];
+var processinter;
+var dayssincestart = 0;
+var countryval = 0;
 var countryList = [
   {"name": "Afghanistan", "code": "AF"},
   {"name": "land Islands", "code": "AX"},
@@ -310,6 +316,7 @@ var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
 
 fetchdata();
 function fetchdata(){
+  processinter = 0;
   var confirmed = [];
   var deaths = [];
   var recov = [];
@@ -333,12 +340,15 @@ function fetchdata(){
       //console.log(deaths);
       $.ajax({
         type: "GET",
-        url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv",
+        url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv",
         dataType: "text",
         success: function(data) {recovscase(data);}
       });
       function recovscase(data) {
         recov = parseinputdata(data);
+        /*  console.log(timeseriesdatacase);
+        console.log(timeseriesdatadeath);
+        console.log(timeseriesdatarecov);*/
         compiledata(confirmed, deaths, recov);
       }
     }
@@ -357,6 +367,7 @@ function compiledata(confirmed, deaths, recov){
 
 
 function parseinputdata(alltext){
+  processinter++
   var supertemp = alltext;
   var confirmeddata = [];
   var latest_stats = [];
@@ -385,7 +396,38 @@ function parseinputdata(alltext){
       }
     }
     if (skipI) {
+      //  console.log(tempindex);
       latest_stats.push({"location": confirmeddata[i].Country_Region, "total_cases":confirmeddata[i][thisdate]});
+      dayssincestart = Object.keys(confirmeddata[i]).length-1-4;
+      for (var r = 4; r < Object.keys(confirmeddata[i]).length-1; r++) {
+        //  timeseriesdata[0][tempindex][Object.keys(confirmeddata[i])[r]] = confirmeddata[i][Object.keys(confirmeddata[i])[r]];
+        //console.log(  Object.keys(confirmeddata[i])[r]);
+        if (processinter == 1 && i>0) {
+          timeseriesdatacase.push({"location":confirmeddata[i].Country_Region,[Object.keys(confirmeddata[i])[r]] : confirmeddata[i][Object.keys(confirmeddata[i])[r]]});
+          for (var q = 0; q < confirmeddata.length-1; q++) {
+            if (confirmeddata[i].Country_Region == confirmeddata[q].Country_Region && i != q) {
+              timeseriesdatacase[timeseriesdatacase.length-1][Object.keys(confirmeddata[i])[r]] = parseInt(timeseriesdatacase[timeseriesdatacase.length-1][Object.keys(confirmeddata[i])[r]]) + parseInt(confirmeddata[q][Object.keys(confirmeddata[i])[r]]);
+            }
+          }
+        }
+        else if (processinter == 2 && i>0) {
+          timeseriesdatadeath.push({"location":confirmeddata[i].Country_Region,[Object.keys(confirmeddata[i])[r]] : confirmeddata[i][Object.keys(confirmeddata[i])[r]]});
+          for (var q = 0; q < confirmeddata.length-1; q++) {
+            if (confirmeddata[i].Country_Region == confirmeddata[q].Country_Region && i != q) {
+              timeseriesdatadeath[timeseriesdatadeath.length-1][Object.keys(confirmeddata[i])[q]] = parseInt(timeseriesdatadeath[timeseriesdatadeath.length-1][Object.keys(confirmeddata[i])[r]]) + parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[q]]);
+            }
+          }
+        }
+        else if (processinter == 3 && i>0) {
+          timeseriesdatarecov.push({"location":confirmeddata[i].Country_Region,[Object.keys(confirmeddata[i])[r]] : confirmeddata[i][Object.keys(confirmeddata[i])[r]]});
+          for (var q = 0; q < confirmeddata.length-1; q++) {
+            if (confirmeddata[i].Country_Region == confirmeddata[q].Country_Region && i != q) {
+              timeseriesdatarecov[timeseriesdatarecov.length-1][Object.keys(confirmeddata[i])[q]] = parseInt(timeseriesdatarecov[timeseriesdatarecov.length-1][Object.keys(confirmeddata[i])[r]]) + parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[q]]);
+            }
+          }
+        }
+      }
+      //  console.log(Object.keys(confirmeddata[i]));
       for (var q = 0; q < confirmeddata.length-1; q++) {
         if (confirmeddata[i].Country_Region == confirmeddata[q].Country_Region && i != q) {
           latest_stats[latest_stats.length-1].total_cases = parseInt(latest_stats[latest_stats.length-1].total_cases) + parseInt(confirmeddata[q][thisdate]);
@@ -475,10 +517,10 @@ function makemap(compliedstats) {
       worldtotal = parseInt(worldtotal)+parseInt(compliedstats[i].total_cases);
     }
     if (!Number.isNaN(compliedstats[i].total_recovered)) {
-  worldtotalrecovered = parseInt(worldtotalrecovered)+parseInt(compliedstats[i].total_recovered);
+      worldtotalrecovered = parseInt(worldtotalrecovered)+parseInt(compliedstats[i].total_recovered);
     }
     if (!Number.isNaN(compliedstats[i].total_deaths)) {
-    worldtotaldeath = parseInt(worldtotaldeath)+parseInt(compliedstats[i].total_deaths);
+      worldtotaldeath = parseInt(worldtotaldeath)+parseInt(compliedstats[i].total_deaths);
     }
   }
   //console.log(worldtotal,worldtotalrecovered,worldtotaldeath);
@@ -589,6 +631,7 @@ polygonSeries.mapPolygons.template.events.on("over", function(ev) {
 polygonSeries.mapPolygons.template.events.on("out", function(ev) {
   heatLegend.valueAxis.hideTooltip();
 });
+maketimeseries();
 }
 
 const selectElement = document.querySelector('#mapdat');
@@ -600,9 +643,122 @@ selectElement.addEventListener('change', (event) => {
 
 const selectElement2 = document.querySelector('#countryselect');
 selectElement2.addEventListener('change', (event) => {
-  var countryval = $("#countryselect").val();
+  countryval = $("#countryselect").val();
   chart.zoomToMapObject(polygonSeries.getPolygonById(countryval));
   if (countryval == 0) {
     chart.goHome();
   }
+  maketimeseries();
 });
+
+function maketimeseries(){
+  am4core.useTheme(am4themes_animated);
+
+  //console.log(timeseriesdatacase);
+  //console.log(timeseriesdatadeath);
+  //console.log(timeseriesdatarecov);
+  // Create chart instance
+  var timechart = am4core.create("timeseries", am4charts.XYChart);
+  timechart.paddingRight = 20;
+
+  // Add data
+  for (var i = 0; i < dayssincestart; i++){
+    var tempday = {};
+    tempday["date"] = i;//Object.keys(timeseriesdatacase[i])[1];
+    //console.log(tempday)
+    //tempday = '{date :'+Object.keys(timeseriesdatacase[i])[1]+','
+    for (var q = 0; q < (timeseriesdatacase.length)/dayssincestart; q++) {
+      tempday[timeseriesdatacase[i+q*dayssincestart].location] = timeseriesdatacase[i+q*dayssincestart][Object.keys(timeseriesdatacase[i])[1]];
+      //console.log(tempday);
+    }
+    timechart.data.push(tempday);
+    //timechart.data.push(timeseriesdatacase);
+    //console.log(timeseriesdatacase[i])
+  }
+
+
+  // Create  axis
+  var valueAxis = timechart.yAxes.push(new am4charts.ValueAxis());
+  var valueAxis2 = timechart.xAxes.push(new am4charts.ValueAxis());
+  //valueAxis.logarithmic = true;
+  //console.log(timechart.data);
+
+  /*var series = [];
+  for (var q = 0; q < (timeseriesdatacase.length)/dayssincestart; q++) {
+  series[q] = timechart.series.push(new am4charts.LineSeries());
+  series[q].dataFields.valueY = timeseriesdatacase[q].location;
+  series[q].dataFields.valueX = "date";
+  series[q].strokeWidth = 3;
+  series[q].tensionX = 0.8;
+  series[q].bullets.push(new am4charts.CircleBullet());
+  series[q].connect = false;
+  series[q].name = timeseriesdatacase[q*dayssincestart].location;
+}*/
+// Create series
+
+var series1 = timechart.series.push(new am4charts.LineSeries());
+series1.dataFields.valueY = "US";
+series1.dataFields.valueX = "date";
+series1.strokeWidth = 3;
+series1.tensionX = 0.8;
+series1.bullets.push(new am4charts.CircleBullet());
+series1.connect = false;
+series1.name = "US";
+series1.tooltipText = "{valueX}: [b]{valueY}[/]";
+series1.strokeWidth = 2;
+
+var series2 = timechart.series.push(new am4charts.LineSeries());
+series2.dataFields.valueY = "China";
+series2.dataFields.valueX = "date";
+series2.strokeWidth = 3;
+series2.tensionX = 0.8;
+series2.bullets.push(new am4charts.CircleBullet());
+series2.connect = false;
+series2.name = "China";
+series2.tooltipText = "{valueX}: [b]{valueY}[/]";
+series2.strokeWidth = 2;
+
+var series3 = timechart.series.push(new am4charts.LineSeries());
+series3.dataFields.valueY = "Italy";
+series3.dataFields.valueX = "date";
+series3.strokeWidth = 3;
+series3.tensionX = 0.8;
+series3.bullets.push(new am4charts.CircleBullet());
+series3.connect = false;
+series3.name = "Italy";
+series3.tooltipText = "{valueX}: [b]{valueY}[/]";
+series3.strokeWidth = 2;
+if (countryval != 0) {
+  for (var i = 0; i < timeseriesdatacase.length/dayssincestart; i++) {
+    for (var q = 0; q < countryList.length; q++) {
+      if ((countryList[q].name == timeseriesdatacase[i*dayssincestart].location || countryList[q].code == timeseriesdatacase[i*dayssincestart].location)) {
+        if (countryval == countryList[q].code) {
+          var series4 = timechart.series.push(new am4charts.LineSeries());
+          series4.dataFields.valueY = countryList[q].name;
+          series4.dataFields.valueX = "date";
+          series4.strokeWidth = 3;
+          series4.tensionX = 0.8;
+          series4.bullets.push(new am4charts.CircleBullet());
+          series4.connect = false;
+          series4.name = countryList[q].name;
+          series4.tooltipText = "{valueX}: [b]{valueY}[/]";
+          series4.strokeWidth = 2;
+        //  console.log(countryList[q].name,timeseriesdatacase[i].location,countryval);
+
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+timechart.legend = new am4charts.Legend();
+timechart.cursor = new am4charts.XYCursor();
+
+
+
+
+}

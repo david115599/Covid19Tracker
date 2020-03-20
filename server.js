@@ -26,6 +26,12 @@ app.get('/', function(request, response){
   response.render('index',{feedback:""});
 });
 
+app.get('/test', function(request, response){
+  response.status(200);
+  response.setHeader('Content-Type', 'text/html')
+  response.render('index0',{feedback:""});
+});
+
 
 app.post('/view', function(request, responsea, body){
   var options = {

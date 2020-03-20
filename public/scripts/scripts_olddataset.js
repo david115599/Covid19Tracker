@@ -1,6 +1,5 @@
 var d = new Date();
 var buttonval = "0";
-var thisdate;
 var countryList = [
   {"name": "Afghanistan", "code": "AF"},
   {"name": "land Islands", "code": "AX"},
@@ -47,7 +46,6 @@ var countryList = [
   {"name": "Chad", "code": "TD"},
   {"name": "Chile", "code": "CL"},
   {"name": "China", "code": "CN"},
-  {"name": "China", "code": "CHN"},
   {"name": "Christmas Island", "code": "CX"},
   {"name": "Cocos (Keeling) Islands", "code": "CC"},
   {"name": "Colombia", "code": "CO"},
@@ -258,7 +256,7 @@ var countryList = [
   {"name": "Mainland China", "code": "CN"}
 ];
 
-var population = [];
+  var population = [];
 
 $.ajax({
   type: "GET",
@@ -269,8 +267,8 @@ $.ajax({
 
 
 function getpopulation(allText) {
-  //  console.log(allText);
-  var temp = allText.split("/").join("_");
+  //console.log(allText);
+  var temp = allText.split("/").join("_")
   var allTextLines = temp.split(/\r\n|\n/);
   var headers = (allTextLines[0].split(" ").join("_")).toString().split(',');
 
@@ -279,9 +277,6 @@ function getpopulation(allText) {
   //  console.log(headers);
 
   //console.log(headers);
-  for (var q = 0; q < headers.length-1; q++) {
-    //  headers[q] = headers[q].substring(1, headers[q].length - 1);
-  }
   for (var i=0; i<allTextLines.length; i++) {
     var data = allTextLines[i].split(',');
     population[i] = {};
@@ -291,12 +286,12 @@ function getpopulation(allText) {
     }
   }
   for (var i=0; i<population.length-1; i++) {
-    /*  console.log(population[i]['"Country_Code"'].substring(1,3));
+  /*  console.log(population[i]['"Country_Code"'].substring(1,3));
     console.log(population[i]['"Country_Code"']);
     console.log(population[i]['"2019"'].substring(1, population[i]['"2019"'].length - 1));*/
   }
   //console.log("population");
-  //  console.log(population);
+//  console.log(population);
 }
 
 
@@ -308,99 +303,15 @@ function getpopulation(allText) {
 var chart = am4core.create("chartdiv", am4maps.MapChart);
 var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
 
-fetchdata();
-function fetchdata(){
-  var confirmed = [];
-  var deaths = [];
-  var recov = [];
-  $.ajax({
-    type: "GET",
-    url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
-    dataType: "text",
-    success: function(data) {confirmedcase(data);}
-  });
-  function confirmedcase(data) {
-    confirmed = parseinputdata(data);
-    //console.log(confirmed);
-    $.ajax({
-      type: "GET",
-      url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv",
-      dataType: "text",
-      success: function(data) {deathscase(data);}
-    });
-    function deathscase(data) {
-      deaths = parseinputdata(data);
-      //console.log(deaths);
-      $.ajax({
-        type: "GET",
-        url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv",
-        dataType: "text",
-        success: function(data) {recovscase(data);}
-      });
-      function recovscase(data) {
-        recov = parseinputdata(data);
-        compiledata(confirmed, deaths, recov);
-      }
-    }
-  }
-}
+$.ajax({
+  type: "GET",
+  url: "https://raw.githubusercontent.com/owid/covid-19-who/master/public/data/full_data.csv",
+  dataType: "text",
+  success: function(data) {processData(data);}
+});
 
 
-function compiledata(confirmed, deaths, recov){
-  var compliedstats = [];
-  for (var i = 0; i < confirmed.length-1; i++) {
-    compliedstats.push({"location": confirmed[i].location, "total_cases":confirmed[i].total_cases, "total_deaths":deaths[i].total_cases, "total_recovered":recov[i].total_cases})
-  }
-  //console.log(confirmed);
-  makemap(compliedstats);
-}
-
-
-function parseinputdata(alltext){
-  var supertemp = alltext;
-  var confirmeddata = [];
-  var latest_stats = [];
-  //console.log(allText);
-  var temp = supertemp.split("/").join("_")
-  var allTextLines = temp.split(/\r\n|\n/);
-  var headers = allTextLines[0].split(',');
-
-  //console.log(headers);
-  for (var i=0; i<allTextLines.length; i++) {
-    var data = allTextLines[i].split(',');
-    confirmeddata[i] = {};
-    if (data.length == headers.length) {
-      for (var q = 0; q < headers.length; q++) {
-        confirmeddata[i][headers[q]] = data[q];
-      }
-    }
-  }
-  //  console.log(confirmeddata);
-  thisdate = Object.keys(confirmeddata[0])[Object.keys(confirmeddata[0]).length-1];
-  for (var i = 0; i < confirmeddata.length-1; i++) {
-    var skipI = true;
-    for (var z = 0; z < latest_stats.length; z++) {
-      if (latest_stats[z].location == confirmeddata[i].Country_Region) {
-        skipI = false;
-      }
-    }
-    if (skipI) {
-      latest_stats.push({"location": confirmeddata[i].Country_Region, "total_cases":confirmeddata[i][thisdate]});
-      for (var q = 0; q < confirmeddata.length-1; q++) {
-        if (confirmeddata[i].Country_Region == confirmeddata[q].Country_Region && i != q) {
-          latest_stats[latest_stats.length-1].total_cases = parseInt(latest_stats[latest_stats.length-1].total_cases) + parseInt(confirmeddata[q][thisdate]);
-        }
-      }
-    }
-  }
-  return(latest_stats);
-}
-
-
-
-
-function makemap(compliedstats) {
-  var stattablevar = "";
+function processData(allText) {
   chart = am4core.create("chartdiv", am4maps.MapChart);
 
   // Set map definition
@@ -417,7 +328,7 @@ function makemap(compliedstats) {
 
   // Configure series
   var polygonTemplate = polygonSeries.mapPolygons.template;
-  polygonTemplate.tooltipText = "{name}: | Confirmed Cases: {Total_Confirmed_cases} | Deaths:{Deaths} | Recovered:{Recovered}";
+  polygonTemplate.tooltipText = "{name}: | Confirmed Cases: {Total_Confirmed_cases} | Deaths:{Deaths}";
   polygonTemplate.fill = am4core.color("#EFD6AC");
 
   var lastSelected;
@@ -464,100 +375,75 @@ function makemap(compliedstats) {
   homeButton.parent = chart.zoomControl;
   homeButton.insertBefore(chart.zoomControl.plusButton);
 
-  //console.log(latest_stats);
+  var confirmeddata = [];
   var infectedcountries = [];
+  var urlf;
+  var thisdate;
+  var latest_stats=[];
   var content ='<option value= "0"> Select a Country/Region </option>';
-  var worldtotal = 0;
-  var worldtotalrecovered = 0;
-  var worldtotaldeath = 0;
-  for (var i = 0; i < compliedstats.length-1; i++) {
-    if (!Number.isNaN(compliedstats[i].total_cases)) {
-      worldtotal = parseInt(worldtotal)+parseInt(compliedstats[i].total_cases);
+  month = d.getMonth()+1;
+  if (d.getMonth()+1<10) {
+    if (d.getDate()<10) {
+      thisdate = d.getFullYear()+'-0'+(month)+'-0'+d.getDate();
     }
-    if (!Number.isNaN(compliedstats[i].total_recovered)) {
-  worldtotalrecovered = parseInt(worldtotalrecovered)+parseInt(compliedstats[i].total_recovered);
-    }
-    if (!Number.isNaN(compliedstats[i].total_deaths)) {
-    worldtotaldeath = parseInt(worldtotaldeath)+parseInt(compliedstats[i].total_deaths);
+    thisdate = d.getFullYear()+'-0'+(month)+'-'+d.getDate();
+  }
+  else if (d.getDay()<10) {
+    thisdate = d.getFullYear()+'-'+(month)+'-0'+d.getDate();
+  }
+  //console.log(allText);
+  var temp = allText.split("/").join("_")
+  var allTextLines = temp.split(/\r\n|\n/);
+  var headers = allTextLines[0].split(',');
+
+  //console.log(headers);
+  for (var i=0; i<allTextLines.length; i++) {
+    var data = allTextLines[i].split(',');
+    confirmeddata[i] = {};
+    if (data.length == headers.length) {
+      for (var q = 0; q < headers.length; q++) {
+        confirmeddata[i][headers[q]] = data[q];
+      }
     }
   }
-  //console.log(worldtotal,worldtotalrecovered,worldtotaldeath);
-  $('#worldstats').html('Total Cases<span class="badge badge-light">'+worldtotal+'</span>, Recovered <span class="badge badge-light">'+worldtotalrecovered+'</span>, Total Deaths <span class="badge badge-light">'+worldtotaldeath+'</span>, Last Updated <span class="badge badge-light">'+thisdate+'</span>');
-  //console.log(population);
-  for (var i = 0; i < compliedstats.length; i++) {
+  var stattablevar = "";
+  for (var i = 0; i < confirmeddata.length-1; i++) {
+    //console.log(confirmeddata[i].date+"got here"+confirmeddata[confirmeddata.length-2].date);
+    if (confirmeddata[i].date == confirmeddata[confirmeddata.length-2].date) {
+      latest_stats.push(confirmeddata[i]);
+      //console.log("also got here");
+      /*  'Total Cases<span class="badge badge-light">'+latest_stats[latest_stats.length-1].total_cases+'</span>, New Cases <span class="badge badge-light">'+latest_stats[latest_stats.length-1].new_cases+'</span>, Total Deaths <span class="badge badge-light">'+latest_stats[latest_stats.length-1].total_deaths+'</span>, New Deaths <span class="badge badge-light">'+latest_stats[latest_stats.length-1].new_deaths+'</span>, Last Updated <span class="badge badge-light">'+latest_stats[latest_stats.length-1].date+'</span>'*/
+    }
+  }
+  //console.log(latest_stats[latest_stats.length-1]);
+
+  $('#worldstats').html('Total Cases<span class="badge badge-light">'+latest_stats[latest_stats.length-1].total_cases+'</span>, New Cases <span class="badge badge-light">'+latest_stats[latest_stats.length-1].new_cases+'</span>, Total Deaths <span class="badge badge-light">'+latest_stats[latest_stats.length-1].total_deaths+'</span>, New Deaths <span class="badge badge-light">'+latest_stats[latest_stats.length-1].new_deaths+'</span>, Last Updated <span class="badge badge-light">'+latest_stats[latest_stats.length-1].date+'</span>');
+  for (var i = 0; i < latest_stats.length; i++) {
     for (var q = 0; q < countryList.length; q++) {
-      if (countryList[q].name == compliedstats[i].location || countryList[q].code == compliedstats[i].location) {
+      if (countryList[q].name == latest_stats[i].location) {
         if (buttonval == "0") {
-          infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered ,"value":compliedstats[i].total_cases  });
-          content+=  '<option value= '+countryList[q].code+' >'+compliedstats[i].location+' </option>';
-          stattablevar+='<div class="row"><div class="col-sm">'+compliedstats[i].location+'</div><div class="col-sm">'+compliedstats[i].total_cases+'</div><div class="col-sm">'+compliedstats[i].total_deaths+'</div><div class="col-sm">'+compliedstats[i].total_recovered+'</div></div><hr>';
+          infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_cases  });
+          content+=  '<option value= '+countryList[q].code+' >'+latest_stats[i].location+' </option>';
+          stattablevar+='<div class="row"><div class="col-sm">'+latest_stats[i].location+'</div><div class="col-sm">'+latest_stats[i].total_cases+'</div><div class="col-sm">'+latest_stats[i].total_deaths+'</div></div><hr>';
         }
         else if  (buttonval == "1") {
-          infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered ,"value":compliedstats[i].total_deaths  });
-          content+=  '<option value= '+countryList[q].code+'>'+compliedstats[i].location+' </option>';
-          stattablevar+='<div class="row"><div class="col-sm">'+compliedstats[i].location+'</div><div class="col-sm">'+compliedstats[i].total_cases+'</div><div class="col-sm">'+compliedstats[i].total_deaths+'</div><div class="col-sm">'+compliedstats[i].total_recovered+'</div></div><hr>';
-        }
-        else if  (buttonval == "5") {
-          infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered ,"value":compliedstats[i].total_recovered  });
-          content+=  '<option value= '+countryList[q].code+'>'+compliedstats[i].location+' </option>';
-          stattablevar+='<div class="row"><div class="col-sm">'+compliedstats[i].location+'</div><div class="col-sm">'+compliedstats[i].total_cases+'</div><div class="col-sm">'+compliedstats[i].total_deaths+'</div><div class="col-sm">'+compliedstats[i].total_recovered+'</div></div><hr>';
-        }
-        else if  (buttonval == "6") {
-          infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered ,"value":compliedstats[i].total_recovered/compliedstats[i].total_cases});
-          content+=  '<option value= '+countryList[q].code+'>'+compliedstats[i].location+' </option>';
-          stattablevar+='<div class="row"><div class="col-sm">'+compliedstats[i].location+'</div><div class="col-sm">'+compliedstats[i].total_cases+'</div><div class="col-sm">'+compliedstats[i].total_deaths+'</div><div class="col-sm">'+compliedstats[i].total_recovered+'</div></div><hr>';
+          infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":latest_stats[i].total_deaths  });
+          content+=  '<option value= '+countryList[q].code+'>'+latest_stats[i].location+' </option>';
+          stattablevar+='<div class="row"><div class="col-sm">'+latest_stats[i].location+'</div><div class="col-sm">'+latest_stats[i].total_cases+'</div><div class="col-sm">'+latest_stats[i].total_deaths+'</div></div><hr>';
         }
         else if  (buttonval == "2") {
-          for (var z = 0; z < population.length-1; z++) {
-            //console.log(population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1));
-            //  console.log(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))
-            if (population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1) == countryList[q].code) {
-              infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered,"value":(parseInt(compliedstats[i].total_deaths)/(parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))))  });
-              //console.log("here");
-              //console.log(population[i]['"Country_Code"']);
-              //  console.log(compliedstats[i].total_deaths/parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1)));
-            }
-          }
-          content+=  '<option value= '+countryList[q].code+'>'+compliedstats[i].location+' </option>';
-          stattablevar+='<div class="row"><div class="col-sm">'+compliedstats[i].location+'</div><div class="col-sm">'+compliedstats[i].total_cases+'</div><div class="col-sm">'+compliedstats[i].total_deaths+'</div><div class="col-sm">'+compliedstats[i].total_recovered+'</div></div><hr>';
+          infectedcountries.push({"id": countryList[q].code, "name" : latest_stats[i].location, "Total_Confirmed_cases":latest_stats[i].total_cases,"Deaths":latest_stats[i].total_deaths ,"value":(latest_stats[i].total_deaths/(population[i]['"2019"'].substring(1, population[i]['"2019"'].length - 1)))  });
+          content+=  '<option value= '+countryList[q].code+'>'+latest_stats[i].location+' </option>';
+          stattablevar+='<div class="row"><div class="col-sm">'+latest_stats[i].location+'</div><div class="col-sm">'+latest_stats[i].total_cases+'</div><div class="col-sm">'+latest_stats[i].total_deaths+'</div></div><hr>';
         }
-        else if  (buttonval == "3") {
-          for (var z = 0; z < population.length-1; z++) {
-            //console.log(population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1));
-            //  console.log(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))
-            if (population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1) == countryList[q].code) {
-              infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered,"value":(parseInt(compliedstats[i].total_cases)/(parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))))  });
-              //console.log("here");
-              //console.log(population[i]['"Country_Code"']);
-              //  console.log(compliedstats[i].total_deaths/parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1)));
-            }
-          }
-          content+=  '<option value= '+countryList[q].code+'>'+compliedstats[i].location+' </option>';
-          stattablevar+='<div class="row"><div class="col-sm">'+compliedstats[i].location+'</div><div class="col-sm">'+compliedstats[i].total_cases+'</div><div class="col-sm">'+compliedstats[i].total_deaths+'</div><div class="col-sm">'+compliedstats[i].total_recovered+'</div></div><hr>';
-        }
-        else if  (buttonval == "4") {
-          for (var z = 0; z < population.length-1; z++) {
-            //console.log(population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1));
-            //  console.log(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))
-            if (population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1) == countryList[q].code) {
-              infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered,"value":(parseInt(compliedstats[i].total_recovered)/(parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))))  });
-              //console.log("here");
-              //console.log(population[i]['"Country_Code"']);
-              //  console.log(compliedstats[i].total_deaths/parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1)));
-            }
-          }
-          content+=  '<option value= '+countryList[q].code+'>'+compliedstats[i].location+' </option>';
-          stattablevar+='<div class="row"><div class="col-sm">'+compliedstats[i].location+'</div><div class="col-sm">'+compliedstats[i].total_cases+'</div><div class="col-sm">'+compliedstats[i].total_deaths+'</div><div class="col-sm">'+compliedstats[i].total_recovered+'</div></div><hr>';
-        }
+
+        //console.log(buttonval);
       }
-
-      //console.log(buttonval);
-    }
-    /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
-    infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
-  }*/
+      /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
+      infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
+    }*/
+  }
 }
-
 $('#stattable').html(stattablevar);
 //console.log(confirmeddata);
 //  console.log(content);
@@ -594,7 +480,12 @@ polygonSeries.mapPolygons.template.events.on("out", function(ev) {
 const selectElement = document.querySelector('#mapdat');
 selectElement.addEventListener('change', (event) => {
   buttonval = $("#mapdat").val();
-  fetchdata();
+  $.ajax({
+    type: "GET",
+    url: "https://raw.githubusercontent.com/owid/covid-19-who/master/public/data/full_data.csv",
+    dataType: "text",
+    success: function(data) {processData(data);}
+  });
 });
 
 

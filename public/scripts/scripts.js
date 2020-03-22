@@ -7,6 +7,10 @@ var timeseriesdatarecov = [];
 var processinter;
 var dayssincestart = 0;
 var countryval = 0;
+var Greenlandval = [];
+var confirmregion = [];
+var deathregion = [];
+var recovregion = [];
 var countryList = [
   {"name": "Afghanistan", "code": "AF"},
   {"name": "land Islands", "code": "AX"},
@@ -60,9 +64,12 @@ var countryList = [
   {"name": "Comoros", "code": "KM"},
   {"name": "Congo", "code": "CG"},
   {"name": "Congo, The Democratic Republic of the", "code": "CD"},
+  {"name": "Congo (Brazzaville)", "code": "CD"},
   {"name": "Cook Islands", "code": "CK"},
   {"name": "Costa Rica", "code": "CR"},
   {"name": 'Cote D"Ivoire', "code": "CI"},
+    {"name": "Cote d'Ivoire", "code": "CI"},
+
   {"name": "Croatia", "code": "HR"},
   {"name": "Cuba", "code": "CU"},
   {"name": "Cyprus", "code": "CY"},
@@ -230,7 +237,7 @@ var countryList = [
   {"name": "Syrian Arab Republic", "code": "SY"},
   {"name": "Taiwan, Province of China", "code": "TW"},
   {"name": "Tajikistan", "code": "TJ"},
-  {"name": "Tanzania, United Republic of", "code": "TZ"},
+  {"name": "Tanzania", "code": "TZ"},
   {"name": "Thailand", "code": "TH"},
   {"name": "Timor-Leste", "code": "TL"},
   {"name": "Togo", "code": "TG"},
@@ -392,6 +399,34 @@ function parseinputdata(alltext){
   thisdate = Object.keys(confirmeddata[0])[Object.keys(confirmeddata[0]).length-1];
   for (var i = 0; i < confirmeddata.length-1; i++) {
     var skipI = true;
+    if(confirmeddata[i].Province_State=="Greenland"){
+      if (processinter == 1 && i>0) {
+        //  confirmregion.push({"location": confirmeddata[i].Province_State, "total_cases":confirmeddata[i][thisdate]});
+        Greenlandval[0]=confirmeddata[i][Object.keys(confirmeddata[i])[r]];
+      }
+      else if (processinter == 2 && i>0) {
+        //  deathregion.push({"location": confirmeddata[i].Province_State, "total_cases":confirmeddata[i][thisdate]});
+        Greenlandval[1]=confirmeddata[i][Object.keys(confirmeddata[i])[r]];
+      }
+      else if (processinter == 3 && i>0) {
+        //  recovregion.push({"location": confirmeddata[i].Province_States, "total_cases":confirmeddata[i][thisdate]});
+        Greenlandval[2]=confirmeddata[i][Object.keys(confirmeddata[i])[r]];
+      }
+      //    console.log(Greenlandval);
+    }
+    if (processinter == 1 && i>0) {
+      confirmregion.push({"location": confirmeddata[i].Province_State, "total_cases":confirmeddata[i][thisdate], "lat": confirmeddata[i].Lat, "long": confirmeddata[i].Long});
+      //Greenlandval[0]=confirmeddata[i][Object.keys(confirmeddata[i])[r]];
+    }
+    else if (processinter == 2 && i>0) {
+      deathregion.push({"location": confirmeddata[i].Province_State, "total_cases":confirmeddata[i][thisdate], "lat": confirmeddata[i].lat, "long": confirmeddata[i].long});
+      //Greenlandval[1]=confirmeddata[i][Object.keys(confirmeddata[i])[r]];
+    }
+    else if (processinter == 3 && i>0) {
+      recovregion.push({"location": confirmeddata[i].Province_States, "total_cases":confirmeddata[i][thisdate], "lat": confirmeddata[i].lat, "long": confirmeddata[i].long});
+      //Greenlandval[2]=confirmeddata[i][Object.keys(confirmeddata[i])[r]];
+    }
+
     for (var z = 0; z < latest_stats.length; z++) {
       if (latest_stats[z].location == confirmeddata[i].Country_Region) {
         skipI = false;
@@ -531,6 +566,45 @@ function makemap(compliedstats) {
   //console.log(worldtotal,worldtotalrecovered,worldtotaldeath);
   $('#worldstats').html('Total Cases<span class="badge badge-light">'+worldtotal+'</span>, Recovered <span class="badge badge-light">'+worldtotalrecovered+'</span>, Total Deaths <span class="badge badge-light">'+worldtotaldeath+'</span>, Last Updated <span class="badge badge-light">'+thisdate+'</span>');
   //console.log(population);
+  if (buttonval == "0") {
+    infectedcountries.push({"id": "GL", "name" : "Greenland", "Total_Confirmed_cases":Greenlandval[0],"Deaths":Greenlandval[1] ,"Recovered":Greenlandval[2],"value":parseInt(Greenlandval[0])  });
+  }
+  else if  (buttonval == "1") {
+    infectedcountries.push({"id": "GL", "name" : "Greenland", "Total_Confirmed_cases":Greenlandval[0],"Deaths":Greenlandval[1] ,"Recovered":Greenlandval[2],"value":parseInt(Greenlandval[1])  });
+  }
+  else if  (buttonval == "5") {
+    infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered ,"value":compliedstats[i].total_recovered  });
+    infectedcountries.push({"id": "GL", "name" : "Greenland", "Total_Confirmed_cases":Greenlandval[0],"Deaths":Greenlandval[1] ,"Recovered":Greenlandval[2],"value":parseInt(Greenlandval[2])  });
+  }
+  else if  (buttonval == "6") {
+    infectedcountries.push({"id": "GL", "name" : "Greenland", "Total_Confirmed_cases":Greenlandval[0],"Deaths":Greenlandval[1] ,"Recovered":Greenlandval[2],"value":(parseInt(Greenlandval[2])/(parseInt(Greenlandval[0])))  });
+  }
+  else if  (buttonval == "2") {
+    for (var z = 0; z < population.length-1; z++) {
+      //console.log(population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1));
+      //  console.log(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))
+      if (population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1) == countryList[q].code) {
+        infectedcountries.push({"id": "GL", "name" : "Greenland", "Total_Confirmed_cases":Greenlandval[0],"Deaths":Greenlandval[1] ,"Recovered":Greenlandval[2],"value":(parseInt(Greenlandval[1])/(parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))))  });
+      }
+    }
+  }
+  else if  (buttonval == "3") {
+    for (var z = 0; z < population.length-1; z++) {
+      if (population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1) == countryList[q].code) {
+        infectedcountries.push({"id": "GL", "name" : "Greenland", "Total_Confirmed_cases":Greenlandval[0],"Deaths":Greenlandval[1] ,"Recovered":Greenlandval[2],"value":(parseInt(Greenlandval[0])/(parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))))  });
+      }
+    }
+  }
+  else if  (buttonval == "4") {
+    for (var z = 0; z < population.length-1; z++) {
+      if (population[z]['"Country_Code"'].substring(1, population[z]['"Country_Code"'].length - 1) == "GL") {
+        infectedcountries.push({"id": "GL", "name" : "Greenland", "Total_Confirmed_cases":Greenlandval[0],"Deaths":Greenlandval[1] ,"Recovered":Greenlandval[2],"value":(parseInt(Greenlandval[2])/(parseInt(population[z]['"2020"'].substring(1,population[z]['"2020"'].length-1))))  });
+      }
+    }
+  }
+
+  //console.log(infectedcountries);
+
   for (var i = 0; i < compliedstats.length; i++) {
     for (var q = 0; q < countryList.length; q++) {
       if (countryList[q].name == compliedstats[i].location || countryList[q].code == compliedstats[i].location) {
@@ -603,8 +677,33 @@ function makemap(compliedstats) {
     /*  if (countryList[q].id == confirmeddata[i].Country_Region) {
     infectedcountries.push({"id": confirmeddata[q].Country_Region, "name" : confirmeddata[i].Country_Region, "Total_Confirmed_cases":parseInt(confirmeddata[i][Object.keys(confirmeddata[i])[Object.keys(confirmeddata[i]).length-1]])});
   }*/
-}
 
+}
+var imageSeries = chart.series.push(new am4maps.MapImageSeries());
+
+// Create a circle image in image series template so it gets replicated to all new images
+var imageSeriesTemplate = imageSeries.mapImages.template;
+var circle = imageSeriesTemplate.createChild(am4core.Circle);
+circle.radius = 4;
+circle.fill = am4core.color("rgba(255, 0, 0, .4)");
+circle.stroke = am4core.color("#FFFFFF");
+circle.strokeWidth = 1;
+circle.nonScaling = true;
+circle.tooltipText = "{title} |{value}|";
+imageSeries.heatRules.push({ target: circle, min: 5, max: 30, property: "radius" });
+
+// Set property fields
+imageSeriesTemplate.propertyFields.latitude = "latitude";
+imageSeriesTemplate.propertyFields.longitude = "longitude";
+for (var i = 0; i < confirmregion.length; i++) {
+  imageSeries.data.push(
+    {"latitude":parseInt(confirmregion[i].lat),
+    "longitude":parseInt(confirmregion[i].long),
+    "title":confirmregion[i].location,
+    "value":parseInt(confirmregion[i].total_cases)
+   });
+}
+//console.log(imageSeries.data);
 $('#stattable').html(stattablevar);
 //console.log(confirmeddata);
 //  console.log(content);

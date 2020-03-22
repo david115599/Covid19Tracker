@@ -68,8 +68,7 @@ var countryList = [
   {"name": "Cook Islands", "code": "CK"},
   {"name": "Costa Rica", "code": "CR"},
   {"name": 'Cote D"Ivoire', "code": "CI"},
-    {"name": "Cote d'Ivoire", "code": "CI"},
-
+  {"name": "Cote d'Ivoire", "code": "CI"},
   {"name": "Croatia", "code": "HR"},
   {"name": "Cuba", "code": "CU"},
   {"name": "Cyprus", "code": "CY"},
@@ -483,7 +482,7 @@ function makemap(compliedstats) {
   chart = am4core.create("chartdiv", am4maps.MapChart);
 
   // Set map definition
-  chart.geodata = am4geodata_worldLow;
+  chart.geodata = am4geodata_worldHigh;
 
   // Set projection
   chart.projection = new am4maps.projections.Miller();

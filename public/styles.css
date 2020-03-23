@@ -1,9 +1,14 @@
 h1 {
   color: darkgrey;
-  text-align: left;
+  text-align: center;
   font-size: 3vh;
 }
 h2 {
+  color: darkgrey;
+  text-align: center;
+    font-size: 3vh;
+}
+h3 {
   color: darkgrey;
   text-align: center;
     font-size: 2vh;

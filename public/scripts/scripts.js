@@ -254,7 +254,7 @@ var countryList = [
   {"name": "United Arab Emirates", "code": "AE"},
   {"name": "United Kingdom", "code": "GB"},
   {"name": "United States", "code": "US"},
-  {"name": "United States of America", "code": "US"},
+  //{"name": "United States of America", "code": "US"},
   {"name": "United States Minor Outlying Islands", "code": "UM"},
   {"name": "Uruguay", "code": "UY"},
   {"name": "Uzbekistan", "code": "UZ"},
@@ -329,7 +329,7 @@ function fetchdata(){
   var recov = [];
   $.ajax({
     type: "GET",
-    url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
+    url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
     dataType: "text",
     success: function(data) {confirmedcase(data);}
   });
@@ -338,7 +338,7 @@ function fetchdata(){
     //console.log(confirmed);
     $.ajax({
       type: "GET",
-      url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv",
+      url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv",
       dataType: "text",
       success: function(data) {deathscase(data);}
     });
@@ -609,6 +609,7 @@ function makemap(compliedstats) {
     for (var q = 0; q < countryList.length; q++) {
       if (countryList[q].name == compliedstats[i].location || countryList[q].code == compliedstats[i].location) {
         if (buttonval == "0") {
+
           infectedcountries.push({"id": countryList[q].code, "name" : compliedstats[i].location, "Total_Confirmed_cases":compliedstats[i].total_cases,"Deaths":compliedstats[i].total_deaths ,"Recovered":compliedstats[i].total_recovered ,"value":compliedstats[i].total_cases  });
           content+=  '<option value= '+countryList[q].code+' >'+compliedstats[i].location+' </option>';
           stattablevar+='<div class="row"><div class="col-sm">'+compliedstats[i].location+'</div><div class="col-sm">'+compliedstats[i].total_cases+'</div><div class="col-sm">'+compliedstats[i].total_deaths+'</div><div class="col-sm">'+compliedstats[i].total_recovered+'</div></div><hr>';
@@ -701,7 +702,7 @@ for (var i = 0; i < confirmregion.length; i++) {
     "longitude":parseInt(confirmregion[i].long),
     "title":confirmregion[i].location,
     "value":parseInt(confirmregion[i].total_cases)
-   });
+  });
 }
 //console.log(imageSeries.data);
 $('#stattable').html(stattablevar);

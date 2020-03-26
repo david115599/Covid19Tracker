@@ -767,12 +767,13 @@ function maketimeseries(){
   var timechart = am4core.create("timeseries", am4charts.XYChart);
   timechart.paddingRight = 20;
   // Add data
+  //console.log(timeseriesdatacase);
   for (var i = 0; i < dayssincestart; i++){
     var tempday = {};
     tempday["date"] = i;//Object.keys(timeseriesdatacase[i])[1];
     //console.log(tempday)
     //tempday = '{date :'+Object.keys(timeseriesdatacase[i])[1]+','
-    for (var q = 0; q < (timeseriesdatacase.length)/dayssincestart; q++) {
+    for (var q = 0; q < (timeseriesdatacase.length)/dayssincestart -1; q++) {
       tempday[timeseriesdatacase[i+q*dayssincestart].location] = timeseriesdatacase[i+q*dayssincestart][Object.keys(timeseriesdatacase[i])[1]];
 
       //console.log(tempday);
@@ -887,7 +888,7 @@ function maketimeseries1(){
     tempday["date"] = i;//Object.keys(timeseriesdatacase[i])[1];
     //console.log(tempday)
     //tempday = '{date :'+Object.keys(timeseriesdatacase[i])[1]+','
-    for (var q = 0; q < (timeseriesdatadeath.length)/dayssincestart; q++) {
+    for (var q = 0; q < (timeseriesdatadeath.length)/dayssincestart-1; q++) {
       tempday[timeseriesdatadeath[i+q*dayssincestart].location] = timeseriesdatadeath[i+q*dayssincestart][Object.keys(timeseriesdatadeath[i])[1]];
       //console.log(tempday);
     }

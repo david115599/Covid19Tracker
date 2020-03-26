@@ -789,16 +789,17 @@ function maketimeseries(){
     tempday["date"] = i;//Object.keys(timeseriesdatacase[i])[1];
     //console.log(tempday)
     //tempday = '{date :'+Object.keys(timeseriesdatacase[i])[1]+','
-    for (var q = 0; q < (timeseriesdatacase.length)/dayssincestart -1; q++) {
-      tempday[timeseriesdatacase[i+q*dayssincestart].location] = timeseriesdatacase[i+q*dayssincestart][Object.keys(timeseriesdatacase[i])[1]];
-
+    for (var q = 0; q < ((timeseriesdatacase.length)/dayssincestart)-1; q++) {
+      tempday[timeseriesdatacase[i+q*dayssincestart].location] = parseInt(timeseriesdatacase[i+q*dayssincestart][Object.keys(timeseriesdatacase[i])[1]]);
+      //console.log(timeseriesdatacase[i+q*dayssincestart])
+    console.log([Object.keys(timeseriesdatacase[i])[1]]);
       //console.log(tempday);
     }
     timechart.data.push(tempday);
     //timechart.data.push(timeseriesdatacase);
-    //console.log(timeseriesdatacase[i])
+  //console.log(timeseriesdatacase[i])
   }
-
+    //console.log(timechart.data)
 
   // Create  axis
   var valueAxis = timechart.yAxes.push(new am4charts.ValueAxis());
@@ -904,7 +905,7 @@ function maketimeseries1(){
     tempday["date"] = i;//Object.keys(timeseriesdatacase[i])[1];
     //console.log(tempday)
     //tempday = '{date :'+Object.keys(timeseriesdatacase[i])[1]+','
-    for (var q = 0; q < (timeseriesdatadeath.length)/dayssincestart-1; q++) {
+    for (var q = 0; q < ((timeseriesdatadeath.length)/dayssincestart)-1; q++) {
       tempday[timeseriesdatadeath[i+q*dayssincestart].location] = timeseriesdatadeath[i+q*dayssincestart][Object.keys(timeseriesdatadeath[i])[1]];
       //console.log(tempday);
     }

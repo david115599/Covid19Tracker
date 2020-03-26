@@ -367,7 +367,8 @@ function fetchdata(){
 
 function compiledata(confirmed, deaths, recov){
   var compliedstats = [];
-  for (var i = 0; i < confirmed.length-1; i++) {
+  for (var i = 0; i < confirmed.length-5; i++) {//idk why -5 works but it suddenly does
+  //  console.log("location:"+ confirmed[i].location+ "total_cases"+confirmed[i].total_cases+ "total_deaths"+deaths[i].total_cases+ "total_recovered"+recov[i].total_cases);
     compliedstats.push({"location": confirmed[i].location, "total_cases":confirmed[i].total_cases, "total_deaths":deaths[i].total_cases, "total_recovered":recov[i].total_cases})
   }
   //console.log(confirmed);

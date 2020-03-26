@@ -347,7 +347,7 @@ function fetchdata(){
       //console.log(deaths);
       $.ajax({
         type: "GET",
-        url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv",
+        url: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv",
         dataType: "text",
         success: function(data) {recovscase(data);}
       });

@@ -139,11 +139,13 @@ var countryList = [
   {"name": "Kuwait", "code": "KW"},
   {"name": "Kyrgyzstan", "code": "KG"},
   {"name": 'Lao People"S Democratic Republic', "code": "LA"},
+  {"name": 'Laos', "code": "LA"},
   {"name": "Latvia", "code": "LV"},
   {"name": "Lebanon", "code": "LB"},
   {"name": "Lesotho", "code": "LS"},
   {"name": "Liberia", "code": "LR"},
   {"name": "Libyan Arab Jamahiriya", "code": "LY"},
+  {"name": "Libya", "code": "LY"},
   {"name": "Liechtenstein", "code": "LI"},
   {"name": "Lithuania", "code": "LT"},
   {"name": "Luxembourg", "code": "LU"},
@@ -235,6 +237,7 @@ var countryList = [
   {"name": "Sweden", "code": "SE"},
   {"name": "Switzerland", "code": "CH"},
   {"name": "Syrian Arab Republic", "code": "SY"},
+  {"name": "Syria", "code": "SY"},
   {"name": "Taiwan, Province of China", "code": "TW"},
   {"name": "Tajikistan", "code": "TJ"},
   {"name": "Tanzania", "code": "TZ"},
@@ -268,7 +271,8 @@ var countryList = [
   {"name": "Yemen", "code": "YE"},
   {"name": "Zambia", "code": "ZM"},
   {"name": "Zimbabwe", "code": "ZW"},
-  {"name": "Mainland China", "code": "CN"}
+  {"name": "Mainland China", "code": "CN"},
+  {"name": "Eswatini", "code": "SZ"}
 ];
 
 var population = [];
@@ -367,7 +371,19 @@ function fetchdata(){
 
 function compiledata(confirmed, deaths, recov){
   var compliedstats = [];
-  for (var i = 0; i < confirmed.length-5; i++) {//idk why -5 works but it suddenly does
+if (confirmed.length>deaths.length) {
+  var dif = confirmed.length-deaths.length;
+  for (var i = 0; i < dif-1; i++) {
+    deaths.push({"location": "","total_cases":0 })
+  }
+}
+if (confirmed.length>recov.length) {
+  var dif = confirmed.length-recov.length;
+  for (var i = 0; i < dif-1; i++) {
+    recov.push({"location": "","total_cases":0 })
+  }
+}
+  for (var i = 0; i < confirmed.length-1; i++) {//idk why -5 works but it suddenly does
   //  console.log("location:"+ confirmed[i].location+ "total_cases"+confirmed[i].total_cases+ "total_deaths"+deaths[i].total_cases+ "total_recovered"+recov[i].total_cases);
     compliedstats.push({"location": confirmed[i].location, "total_cases":confirmed[i].total_cases, "total_deaths":deaths[i].total_cases, "total_recovered":recov[i].total_cases})
   }

@@ -136,6 +136,7 @@ var countryList = [
   {"name": 'North Korea', "code": "KP"},
   {"name": "Korea, Republic of", "code": "KR"},
   {"name": "South Korea", "code": "KR"},
+  {"name": "Korea, South", "code": "KR"},
   {"name": "Kuwait", "code": "KW"},
   {"name": "Kyrgyzstan", "code": "KG"},
   {"name": 'Lao People"S Democratic Republic', "code": "LA"},

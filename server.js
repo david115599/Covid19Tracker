@@ -66,3 +66,8 @@ app.get('/about', function(request, response){
   response.setHeader('Content-Type', 'text/html')
   response.render('about',{feedback:""});
 });
+app.get('/print', function(request, response){
+  response.status(200);
+  response.setHeader('Content-Type', 'text/html')
+  response.render('print',{feedback:""});
+});
